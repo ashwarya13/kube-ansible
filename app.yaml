@@ -1,0 +1,10 @@
+- hosts: masters
+  become: yes
+  become_user: ubuntu
+  tasks:
+   - name: pull code
+     command: git clone https://github.com/ashwarya13/kubernetes-demo-app.git
+
+   - name: change to app directory
+     command: kubectl apply -f kubernetes-demo-app/
+       
