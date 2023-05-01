@@ -5,13 +5,36 @@
    - name: pull code
      command: git clone https://github.com/ashwarya13/kubernetes-demo-app.git
 
-   - name: change to app directory
-     command: kubectl apply -f kubernetes-demo-app/
+       
 
 - hosts: workers
   become: yes
   become_user: ubuntu
   tasks:
     - name: Gather worker public ip
+      amazon.aws.ec2_metadata_facts:
+      register: ec2_metadata
+    - name: Set public IP address variable
+      set_fact:
+        public_ip: "{{  ec2_metadata.ansible_facts.ansible_ec2_public_ipv4 }}"
+    - name: Check if ec2_metadata is defined
+      debug:
+        msg: "{{ ansible_ec2_public_ipv4}}"
 
-       
+    - name: Print public ip 
+      debug:
+        var: ansible_ec2_public_ipv4
+- hosts: masters
+  become: yes
+  become_user: ubuntu
+  tasks:
+    - name: Check if ec2_metadata is defined
+      debug:
+        var: "{{ hostvars['worker1']['public_ip']}}"
+    - name:  configure backend-configmap 
+      template:
+        src: backend-configmap.j2
+        dest: /home/ubuntu/kubernetes-demo-app/backend-configmap.yaml
+    - name: change to app directory
+      command: kubectl apply -f kubernetes-demo-app/
+ 
