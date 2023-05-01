@@ -7,4 +7,11 @@
 
    - name: change to app directory
      command: kubectl apply -f kubernetes-demo-app/
+
+- hosts: workers
+  become: yes
+  become_user: ubuntu
+  tasks:
+    - name: Gather worker public ip
+
        
