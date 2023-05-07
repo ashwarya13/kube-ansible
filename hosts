@@ -1,8 +1,8 @@
 [masters]
-master ansible_host=172.31.114.46 ansible_user=ubuntu
+master ansible_host=172.31.119.158 ansible_user=ubuntu
 
 [workers]
-worker1 ansible_host=172.31.127.188 ansible_user=ubuntu
+worker1 ansible_host=172.31.117.89 ansible_user=ubuntu
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3

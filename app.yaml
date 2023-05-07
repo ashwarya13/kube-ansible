@@ -40,10 +40,13 @@
         dest: /home/ubuntu/kubernetes-demo-app/backend-configmap.yaml
     - name: change to app directory
       command: kubectl apply -f kubernetes-demo-app/
+    - name: restart coredns
+      command: kubectl rollout restart -n kube-system deployment/coredns
     - name: wait for pods to come up
       shell: kubectl get pods -o json
       register: kubectl_get_pods
-      until: kubectl_get_pods.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]    
+      until: kubectl_get_pods.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
+      ignore_errors: true    
     - name: patch backend service 
       command: "kubectl patch svc to-do-app-backend -p '{\"spec\": {\"type\": \"LoadBalancer\", \"externalIPs\":[\"{{ hostvars['worker1']['public_ip'] }}\"]}}'"
     - name: patch frontend service
